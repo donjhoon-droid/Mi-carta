@@ -284,6 +284,34 @@
             font-weight: bold;
         }
 
+        /* Botón eliminar en cada slide */
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            z-index: 20;
+            backdrop-filter: blur(5px);
+        }
+
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 1);
+            transform: scale(1.1);
+        }
+
+        /* Solo mostrar botón eliminar en fotos subidas por usuario */
+        .slide.predeterminada .delete-btn {
+            display: none;
+        }
+
         /* Botones de navegación */
         .nav-button {
             position: absolute;
@@ -781,6 +809,103 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* === MODAL DE CONFIRMACIÓN ===*/
+        
+        #confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .confirm-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            font-family: 'Comic Sans MS', cursive;
+            text-align: center;
+            animation: popupAparecer 0.4s ease-out;
+        }
+
+        .confirm-titulo {
+            color: #dc3545;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .confirm-mensaje {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .confirm-botones {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Comic Sans MS', cursive;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn.eliminar {
+            background: #dc3545;
+            color: white;
+        }
+
+        .confirm-btn.eliminar:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .confirm-btn.cancelar {
+            background: #6c757d;
+            color: white;
+        }
+
+        .confirm-btn.cancelar:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 480px) {
+            .confirm-botones {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .confirm-btn {
+                width: 100%;
+            }
+
+            .delete-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+                top: 10px;
+                right: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -884,9 +1009,25 @@
         </div>
     </div>
 
+    <!-- Modal de confirmación para eliminar -->
+    <div id="confirm-modal">
+        <div class="confirm-contenido">
+            <h3 class="confirm-titulo">🗑️ Eliminar Recuerdo</h3>
+            <p class="confirm-mensaje">
+                ¿Estás seguro de que quieres eliminar este recuerdo?<br>
+                <strong>Esta acción no se puede deshacer.</strong> 💔
+            </p>
+            <div class="confirm-botones">
+                <button class="confirm-btn eliminar" onclick="confirmarEliminacion()">🗑️ Eliminar</button>
+                <button class="confirm-btn cancelar" onclick="cerrarConfirmModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // === VARIABLES DEL SLIDER ===
         let fotoActual = 0;
+        let fotoAEliminar = -1; // Para rastrear cuál foto eliminar
         
         // === ALMACENAMIENTO LOCAL DE FOTOS ===
         let fotosPersonalizadas = [];
@@ -978,7 +1119,7 @@
             },
             {
                 src: "foto6.jpg",
-                titulo: "LA MÁS HERMOSA SIEMPRE 💑"
+                titulo: "Juntos siempre 💑"
             }
             // Agrega más fotos aquí...
         ];
@@ -1049,14 +1190,18 @@
             
             // Crear slides
             todasLasFotos.forEach((foto, index) => {
+                // Determinar si es foto predeterminada o subida por usuario
+                const esPredeterminada = index < fotosGaleria.length;
+                
                 // Crear slide
                 const slide = document.createElement("div");
-                slide.className = "slide";
+                slide.className = `slide ${esPredeterminada ? 'predeterminada' : 'personalizada'}`;
                 slide.innerHTML = `
                     <img src="${foto.src}" alt="${foto.titulo}" loading="lazy">
                     <div class="slide-overlay">
                         <p>${foto.titulo}</p>
                     </div>
+                    ${!esPredeterminada ? `<button class="delete-btn" onclick="mostrarConfirmEliminar(${index})" title="Eliminar foto">🗑️</button>` : ''}
                 `;
                 sliderWrapper.appendChild(slide);
                 
@@ -1067,8 +1212,12 @@
                 indicators.appendChild(indicator);
             });
             
-            // Reiniciar posición
-            fotoActual = 0;
+            // Ajustar posición si la foto actual ya no existe
+            const maxIndex = todasLasFotos.length - 1;
+            if (fotoActual > maxIndex) {
+                fotoActual = maxIndex >= 0 ? maxIndex : 0;
+            }
+            
             actualizarSlider();
         }
 
@@ -1200,6 +1349,44 @@
             reader.readAsDataURL(file);
         }
 
+        // === FUNCIONES PARA ELIMINAR FOTOS ===
+        
+        function mostrarConfirmEliminar(index) {
+            fotoAEliminar = index;
+            const modal = document.getElementById("confirm-modal");
+            modal.style.display = "flex";
+        }
+
+        function cerrarConfirmModal() {
+            const modal = document.getElementById("confirm-modal");
+            modal.style.display = "none";
+            fotoAEliminar = -1;
+        }
+
+        function confirmarEliminacion() {
+            if (fotoAEliminar === -1) return;
+            
+            // Calcular el índice en el array de fotos personalizadas
+            const indexPersonalizada = fotoAEliminar - fotosGaleria.length;
+            
+            if (indexPersonalizada >= 0 && indexPersonalizada < fotosPersonalizadas.length) {
+                // Eliminar la foto del array
+                fotosPersonalizadas.splice(indexPersonalizada, 1);
+                
+                // Guardar cambios
+                guardarFotos();
+                
+                // Recargar slider
+                cargarSlider();
+                
+                // Cerrar modal
+                cerrarConfirmModal();
+                
+                // Mostrar confirmación
+                alert("🗑️ Recuerdo eliminado correctamente");
+            }
+        }
+
         // Función anterior mantenida por compatibilidad
         function agregarFoto() {
             abrirUploadModal();
@@ -1242,6 +1429,13 @@
         document.getElementById("upload-modal").addEventListener("click", function(e) {
             if (e.target === this) {
                 cerrarUploadModal();
+            }
+        });
+
+        // Cerrar modal de confirmación al hacer clic fuera
+        document.getElementById("confirm-modal").addEventListener("click", function(e) {
+            if (e.target === this) {
+                cerrarConfirmModal();
             }
         });
 
