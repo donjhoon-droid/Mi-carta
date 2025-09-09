@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Romántico</title>
+    <style>
+        /* Fondo con tu foto */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: url('Fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        /* Caja de la carta */
+        .carta {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2em;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            animation: aparecer 2s ease-in-out;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Texto de la carta */
+        .carta h1 {
+            color: #e63946;
+            margin-bottom: 10px;
+        }
+
+        .carta .mensaje {
+            font-size: 1.2em;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .carta button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #e63946;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .carta button:hover {
+            transform: scale(1.1);
+            background: #d62828;
+        }
+
+        /* Animación de la carta apareciendo */
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Corazones flotando */
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hearts span {
+            position: absolute;
+            bottom: -20px;
+            font-size: 2rem;
+            animation: flotar 6s linear infinite;
+            color: #ff4d6d;
+        }
+
+        .hearts span:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .hearts span:nth-child(2) { left: 30%; animation-delay: 2s; }
+        .hearts span:nth-child(3) { left: 50%; animation-delay: 4s; }
+        .hearts span:nth-child(4) { left: 70%; animation-delay: 1s; }
+        .hearts span:nth-child(5) { left: 90%; animation-delay: 3s; }
+
+        @keyframes flotar {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            50% { transform: translateY(-300px) scale(1.5); opacity: 0.7; }
+            100% { transform: translateY(-600px) scale(0.8); opacity: 0; }
+        }
+
+        /* === ESTILOS DEL POPUP RESPONSIVE === */
+        
+        /* Fondo oscuro del popup */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Contenido del popup - mantiene el estilo romántico */
+        .popup-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            min-width: 280px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 16px;
+            line-height: 1.5;
+            position: relative;
+            animation: popupAparecer 0.4s ease-out;
+            color: #333;
+        }
+
+        @keyframes popupAparecer {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mensaje del popup */
+        #mensaje {
+            font-size: 1.1em;
+            color: #e63946;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* Imagen responsive en el popup */
+        #imagen-sorpresa {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Botones del popup - mantiene estilo romántico */
+        .popup-contenido button {
+            margin: 8px 5px;
+            background: #e63946;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Comic Sans MS', cursive;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(230, 57, 70, 0.3);
+        }
+
+        .popup-contenido button:hover {
+            background: #d62828;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+        }
+
+        /* Botón recuerdos diferenciado */
+        #boton-recuerdos {
+            background: #4CAF50 !important;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3) !important;
+        }
+
+        #boton-recuerdos:hover {
+            background: #45a049 !important;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4) !important;
+        }
+
+
+
+        .oculto {
+            display: none;
+        }
+
+        /* === ESTILOS DE LA GALERÍA DESLIZABLE === */
+        
+        /* Popup de la galería */
+        #galeria-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Contenedor de la galería */
+        .galeria-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 600px;
+            font-family: 'Comic Sans MS', cursive;
+            animation: popupAparecer 0.4s ease-out;
+            position: relative;
+        }
+
+        /* Título de la galería */
+        .galeria-titulo {
+            text-align: center;
+            color: #e63946;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Contenedor del slider */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Wrapper de las fotos */
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        /* Cada slide/foto */
+        .slide {
+            flex: 0 0 100%;
+            position: relative;
+            aspect-ratio: 4/3;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Overlay con texto en cada slide */
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        /* Botón eliminar en cada slide */
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            z-index: 20;
+            backdrop-filter: blur(5px);
+        }
+
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 1);
+            transform: scale(1.1);
+        }
+
+        /* Solo mostrar botón eliminar en fotos subidas por usuario */
+        .slide.predeterminada .delete-btn {
+            display: none;
+        }
+
+        /* Botones de navegación */
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(230, 57, 70, 0.8);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+        }
+
+        .nav-button:hover {
+            background: rgba(230, 57, 70, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-prev {
+            left: 10px;
+        }
+
+        .nav-next {
+            right: 10px;
+        }
+
+        /* Indicadores de posición */
+        .slider-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(230, 57, 70, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: #e63946;
+            transform: scale(1.3);
+        }
+
+        /* Contador de fotos */
+        .foto-counter {
+            text-align: center;
+            color: #e63946;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* Botones de la galería */
+        .galeria-botones {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .galeria-boton {
+            background: #e63946;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Comic Sans MS', cursive;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .galeria-boton:hover {
+            background: #d62828;
+            transform: translateY(-2px);
+        }
+
+        /* === RESPONSIVIDAD GALERÍA DESLIZABLE === */
+        
+        @media (max-width: 768px) {
+            .galeria-contenido {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .galeria-titulo {
+                font-size: 1.5em;
+            }
+
+            .nav-button {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .nav-prev {
+                left: 5px;
+            }
+
+            .nav-next {
+                right: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #galeria-popup {
+                padding: 10px;
+            }
+
+            .galeria-contenido {
+                width: 98%;
+                padding: 15px;
+            }
+
+            .galeria-titulo {
+                font-size: 1.3em;
+                margin-bottom: 15px;
+            }
+
+            .slide-overlay {
+                padding: 15px 10px;
+                font-size: 1em;
+            }
+
+            .nav-button {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+
+            .galeria-boton {
+                padding: 10px 15px;
+                font-size: 12px;
+                margin: 5px;
+                display: block;
+                width: calc(100% - 10px);
+            }
+
+            .indicator {
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        /* Animaciones suaves */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* === RESPONSIVIDAD === */
+        
+        /* Tablets */
+        @media (max-width: 768px) {
+            .carta {
+                max-width: 350px;
+                padding: 1.5em;
+            }
+            
+            .popup-contenido {
+                width: 85%;
+                padding: 20px;
+                font-size: 15px;
+            }
+            
+            .popup-contenido button {
+                padding: 10px 15px;
+                font-size: 13px;
+                margin: 6px 3px;
+            }
+            
+            #imagen-sorpresa {
+                margin: 10px 0;
+            }
+
+            .hearts span {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Móviles */
+        @media (max-width: 480px) {
+            body {
+                overflow-y: auto;
+                min-height: 100vh;
+                height: auto;
+            }
+
+            .carta {
+                max-width: 300px;
+                padding: 1.2em;
+                margin: 20px;
+            }
+
+            .carta h1 {
+                font-size: 1.5em;
+            }
+
+            .carta .mensaje {
+                font-size: 1em;
+            }
+            
+            #popup {
+                padding: 15px;
+            }
+            
+            .popup-contenido {
+                width: 95%;
+                padding: 20px 15px;
+                font-size: 14px;
+                max-width: none;
+            }
+            
+            .popup-contenido button {
+                padding: 10px 12px;
+                font-size: 12px;
+                margin: 5px 2px;
+                display: block;
+                width: calc(100% - 4px);
+                margin-bottom: 8px;
+            }
+            
+            #boton-recuerdos {
+                margin-top: 10px !important;
+            }
+
+            .hearts span {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Pantallas muy pequeñas */
+        @media (max-width: 320px) {
+            .carta {
+                padding: 1em;
+                margin: 15px;
+            }
+
+            .popup-contenido {
+                padding: 15px 10px;
+            }
+            
+            .popup-contenido button {
+                font-size: 11px;
+                padding: 8px 10px;
+            }
+
+            .hearts span {
+                font-size: 1rem;
+            }
+        }
+
+        /* Orientación horizontal en móviles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .hearts span {
+                font-size: 1rem;
+            }
+        }
+
+        /* === REPRODUCTOR DE MÚSICA === */
+        
+        /* Botón de música flotante */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(230, 57, 70, 0.9);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+            background: rgba(230, 57, 70, 1);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.6);
+        }
+
+        .music-control.playing {
+            animation: musicPulse 2s infinite;
+        }
+
+        @keyframes musicPulse {
+            0% { 
+                box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 4px 25px rgba(230, 57, 70, 0.8);
+                transform: scale(1.05);
+            }
+            100% { 
+                box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+                transform: scale(1);
+            }
+        }
+
+        /* Audio oculto */
+        #background-audio {
+            display: none;
+        }
+
+        /* Responsividad del reproductor */
+        @media (max-width: 480px) {
+            .music-control {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+
+        /* === ESTILOS PARA SUBIR FOTOS === */
+        
+        /* Modal para subir foto */
+        #upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 4000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .upload-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            font-family: 'Comic Sans MS', cursive;
+            text-align: center;
+            animation: popupAparecer 0.4s ease-out;
+        }
+
+        .upload-titulo {
+            color: #e63946;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Input de archivo personalizado */
+        .file-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-button {
+            display: block;
+            background: linear-gradient(45deg, #e63946, #d62828);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Comic Sans MS', cursive;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+
+        .file-input-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+        }
+
+        /* Preview de la imagen */
+        .preview-container {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Input para el título */
+        .titulo-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e63946;
+            border-radius: 15px;
+            font-size: 14px;
+            font-family: 'Comic Sans MS', cursive;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .titulo-input:focus {
+            outline: none;
+            border-color: #d62828;
+            box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
+        }
+
+        /* Botones del modal */
+        .upload-botones {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .upload-boton {
+            background: #e63946;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Comic Sans MS', cursive;
+            transition: all 0.3s ease;
+        }
+
+        .upload-boton:hover {
+            background: #d62828;
+            transform: translateY(-1px);
+        }
+
+        .upload-boton.cancelar {
+            background: #6c757d;
+        }
+
+        .upload-boton.cancelar:hover {
+            background: #5a6268;
+        }
+
+        /* Responsividad upload */
+        @media (max-width: 480px) {
+            .upload-contenido {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .upload-titulo {
+                font-size: 1.4em;
+            }
+
+            .file-input-button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .upload-botones {
+                flex-direction: column;
+            }
+
+            .upload-boton {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* === MODAL DE CONFIRMACIÓN ===*/
+        
+        #confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .confirm-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            font-family: 'Comic Sans MS', cursive;
+            text-align: center;
+            animation: popupAparecer 0.4s ease-out;
+        }
+
+        .confirm-titulo {
+            color: #dc3545;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .confirm-mensaje {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .confirm-botones {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Comic Sans MS', cursive;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn.eliminar {
+            background: #dc3545;
+            color: white;
+        }
+
+        .confirm-btn.eliminar:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .confirm-btn.cancelar {
+            background: #6c757d;
+            color: white;
+        }
+
+        .confirm-btn.cancelar:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 480px) {
+            .confirm-botones {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .confirm-btn {
+                width: 100%;
+            }
+
+            .delete-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Corazones flotantes -->
+    <div class="hearts">
+        <span>💖</span>
+        <span>💕</span>
+        <span>💝</span>
+        <span>💗</span>
+        <span>❤️</span>
+    </div>
+
+    <!-- Control de música flotante -->
+    <button class="music-control" id="music-btn" onclick="toggleMusic()">🎵</button>
+    
+    <!-- Audio de fondo -->
+    <audio id="background-audio" loop>
+        <source src="cancion.mp3" type="audio/mpeg">
+        <source src="cancion.ogg" type="audio/ogg">
+        Tu navegador no soporta audio HTML5.
+    </audio>
+
+    <!-- Carta principal -->
+    <div class="carta">
+        <h1>💌 Mensaje Especial</h1>
+        <p class="mensaje">
+            ¡Hola mi amor! 💖<br>
+            Este es un pequeño detalle romántico para ti.
+            Presiona el botón para ver tu sorpresa especial.
+        </p>
+        <button onclick="mostrarSorpresa()">🎁 ¡Sorpresa!</button>
+    </div>
+
+    <!-- Ventana emergente -->
+    <div id="popup" class="oculto">
+        <div class="popup-contenido">
+            <p id="mensaje"></p>
+            <img id="imagen-sorpresa" src="" alt="Sorpresa" style="display:none;">
+            
+            <!-- Botón de sorpresa -->
+            <button id="boton-sorpresa" onclick="mostrarSorpresa()">👉 Toca si quieres otra sorpresa</button>
+            
+            <!-- Botón extra que solo aparece en la foto -->
+            <button id="boton-recuerdos" style="display:none;" onclick="verRecuerdos()">📷 Ver recuerdos</button>
+        </div>
+    </div>
+
+    <!-- Galería de recuerdos deslizable -->
+    <div id="galeria-popup" class="oculto">
+        <div class="galeria-contenido">
+            <h2 class="galeria-titulo">📷 Nuestros Recuerdos Especiales 💕</h2>
+            
+            <div class="foto-counter">
+                <span id="foto-actual">1</span> de <span id="total-fotos">6</span>
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-wrapper" id="slider-wrapper">
+                    <!-- Las fotos se cargarán aquí dinámicamente -->
+                </div>
+                
+                <!-- Botones de navegación -->
+                <button class="nav-button nav-prev" onclick="anteriorFoto()">‹</button>
+                <button class="nav-button nav-next" onclick="siguienteFoto()">›</button>
+            </div>
+            
+            <!-- Indicadores -->
+            <div class="slider-indicators" id="slider-indicators">
+                <!-- Los indicadores se generan dinámicamente -->
+            </div>
+            
+            <div class="galeria-botones">
+                <button class="galeria-boton" onclick="cerrarGaleria()">💖 Volver</button>
+                <button class="galeria-boton" onclick="abrirUploadModal()">📸 Subir foto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para subir fotos -->
+    <div id="upload-modal">
+        <div class="upload-contenido">
+            <h3 class="upload-titulo">📷 Agregar Nuevo Recuerdo 💕</h3>
+            
+            <div class="file-input-container">
+                <input type="file" id="file-input" class="file-input" accept="image/*" onchange="previewImage()">
+                <button class="file-input-button" onclick="document.getElementById('file-input').click()">
+                    🖼️ Seleccionar Foto
+                </button>
+            </div>
+            
+            <div class="preview-container" id="preview-container">
+                <img id="preview-image" class="preview-image" src="" alt="Preview">
+            </div>
+            
+            <input type="text" id="titulo-input" class="titulo-input" placeholder="Escribe un título romántico... 💖">
+            
+            <div class="upload-botones">
+                <button class="upload-boton" onclick="subirFoto()">✨ Agregar</button>
+                <button class="upload-boton cancelar" onclick="cerrarUploadModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div id="confirm-modal">
+        <div class="confirm-contenido">
+            <h3 class="confirm-titulo">🗑️ Eliminar Recuerdo</h3>
+            <p class="confirm-mensaje">
+                ¿Estás seguro de que quieres eliminar este recuerdo?<br>
+                <strong>Esta acción no se puede deshacer.</strong> 💔
+            </p>
+            <div class="confirm-botones">
+                <button class="confirm-btn eliminar" onclick="confirmarEliminacion()">🗑️ Eliminar</button>
+                <button class="confirm-btn cancelar" onclick="cerrarConfirmModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === VARIABLES DEL SLIDER ===
+        let fotoActual = 0;
+        let fotoAEliminar = -1; // Para rastrear cuál foto eliminar
+        
+        // === ALMACENAMIENTO LOCAL DE FOTOS ===
+        let fotosPersonalizadas = [];
+        
+        // Cargar fotos guardadas al iniciar
+        function cargarFotosGuardadas() {
+            const fotosGuardadas = localStorage.getItem('fotosRomanticas');
+            if (fotosGuardadas) {
+                fotosPersonalizadas = JSON.parse(fotosGuardadas);
+            }
+        }
+        
+        // Guardar fotos en almacenamiento local
+        function guardarFotos() {
+            localStorage.setItem('fotosRomanticas', JSON.stringify(fotosPersonalizadas));
+        }
+
+        // Combinar fotos predeterminadas con personalizadas
+        function obtenerTodasLasFotos() {
+            return [...fotosGaleria, ...fotosPersonalizadas];
+        }
+        
+        // === CONTROL DE MÚSICA ===
+        let musicaReproduciendo = false;
+        const audio = document.getElementById('background-audio');
+        const musicBtn = document.getElementById('music-btn');
+
+        function toggleMusic() {
+            if (musicaReproduciendo) {
+                pausarMusica();
+            } else {
+                reproducirMusica();
+            }
+        }
+
+        function reproducirMusica() {
+            audio.play().then(() => {
+                musicaReproduciendo = true;
+                musicBtn.innerHTML = '🎵';
+                musicBtn.classList.add('playing');
+            }).catch(error => {
+                console.log('Error al reproducir música:', error);
+                alert('⚠️ Para escuchar música, interactúa primero con la página');
+            });
+        }
+
+        function pausarMusica() {
+            audio.pause();
+            musicaReproduciendo = false;
+            musicBtn.innerHTML = '🔇';
+            musicBtn.classList.remove('playing');
+        }
+
+        // Inicializar música al cargar la página
+        window.addEventListener('load', function() {
+            // Configurar volumen inicial (50%)
+            audio.volume = 0.5;
+            
+            // Auto-reproducir después de interacción del usuario
+            document.addEventListener('click', function iniciarMusica() {
+                if (!musicaReproduciendo) {
+                    reproducirMusica();
+                    document.removeEventListener('click', iniciarMusica);
+                }
+            }, { once: true });
+        });
+        
+        // Array de fotos para la galería (puedes agregar más)
+        const fotosGaleria = [
+            {
+                src: "foto1.jpg", // 👈 Cambia por tus fotos reales
+                titulo: "Nuestro primer encuentro 💕"
+            },
+            {
+                src: "foto2.jpg",
+                titulo: "Día especial juntos 🌟"
+            },
+            {
+                src: "foto3.jpg", 
+                titulo: "Momentos que atesoro 💖"
+            },
+            {
+                src: "foto4.jpg",
+                titulo: "Risas y alegría 😊"
+            },
+            {
+                src: "foto5.jpg",
+                titulo: "Recuerdo hermoso 🌹"
+            },
+            {
+                src: "foto6.jpg",
+                titulo: "Juntos siempre 💑"
+            }
+            // Agrega más fotos aquí...
+        ];
+
+        const mensajes = [
+            "💌 Jhon dice: ¡Eres una persona increíble! 🌟",
+            "💌 Jhon dice: Espero que tu día esté lleno de sonrisas 😃",
+            "💌 Jhon dice: Esta sorpresa es solo para ti 💖",
+            "💌 Jhon dice: Tu sonrisa ilumina mi día ☀️",
+            "💌 Jhon dice: Eres más especial de lo que imaginas 💫",
+            "💌 Jhon dice: Cada momento contigo es mágico ✨",
+            "💌 Jhon dice: Mi corazón late más fuerte contigo 💓",
+            "💌 Jhon dice: Eres mi lugar favorito en el mundo 🌍"
+        ];
+
+        let contador = 0;
+
+        function mostrarSorpresa() {
+            const popup = document.getElementById("popup");
+            const mensajeElemento = document.getElementById("mensaje");
+            const imagenElemento = document.getElementById("imagen-sorpresa");
+            const botonRecuerdos = document.getElementById("boton-recuerdos");
+
+            contador++;
+
+            if (contador % 5 === 0) {
+                // Cada múltiplo de 5 muestra la foto
+                mensajeElemento.style.display = "none";
+                imagenElemento.style.display = "block";
+                imagenElemento.src = "Fondo.jpg"; // 👈 Tu foto especial
+                botonRecuerdos.style.display = "block";
+            } else {
+                // Mensajes aleatorios en los demás clics
+                const mensaje = mensajes[Math.floor(Math.random() * mensajes.length)];
+                mensajeElemento.textContent = mensaje;
+                mensajeElemento.style.display = "block";
+                imagenElemento.style.display = "none";
+                botonRecuerdos.style.display = "none";
+            }
+
+            popup.style.display = "flex";
+            popup.classList.remove("oculto");
+        }
+
+        // === FUNCIONES DE LA GALERÍA DESLIZABLE ===
+        
+        function verRecuerdos() {
+            const galeriaPopup = document.getElementById("galeria-popup");
+            cargarSlider();
+            galeriaPopup.style.display = "flex";
+            galeriaPopup.classList.remove("oculto");
+        }
+
+        function cargarSlider() {
+            const sliderWrapper = document.getElementById("slider-wrapper");
+            const indicators = document.getElementById("slider-indicators");
+            const totalFotos = document.getElementById("total-fotos");
+            
+            // Obtener todas las fotos (predeterminadas + subidas)
+            const todasLasFotos = obtenerTodasLasFotos();
+            
+            // Limpiar contenido anterior
+            sliderWrapper.innerHTML = "";
+            indicators.innerHTML = "";
+            
+            // Actualizar contador total
+            totalFotos.textContent = todasLasFotos.length;
+            
+            // Crear slides
+            todasLasFotos.forEach((foto, index) => {
+                // Determinar si es foto predeterminada o subida por usuario
+                const esPredeterminada = index < fotosGaleria.length;
+                
+                // Crear slide
+                const slide = document.createElement("div");
+                slide.className = `slide ${esPredeterminada ? 'predeterminada' : 'personalizada'}`;
+                slide.innerHTML = `
+                    <img src="${foto.src}" alt="${foto.titulo}" loading="lazy">
+                    <div class="slide-overlay">
+                        <p>${foto.titulo}</p>
+                    </div>
+                    ${!esPredeterminada ? `<button class="delete-btn" onclick="mostrarConfirmEliminar(${index})" title="Eliminar foto">🗑️</button>` : ''}
+                `;
+                sliderWrapper.appendChild(slide);
+                
+                // Crear indicador
+                const indicator = document.createElement("div");
+                indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+                indicator.onclick = () => irAFoto(index);
+                indicators.appendChild(indicator);
+            });
+            
+            // Ajustar posición si la foto actual ya no existe
+            const maxIndex = todasLasFotos.length - 1;
+            if (fotoActual > maxIndex) {
+                fotoActual = maxIndex >= 0 ? maxIndex : 0;
+            }
+            
+            actualizarSlider();
+        }
+
+        function actualizarSlider() {
+            const sliderWrapper = document.getElementById("slider-wrapper");
+            const indicators = document.querySelectorAll(".indicator");
+            const fotoActualSpan = document.getElementById("foto-actual");
+            
+            const todasLasFotos = obtenerTodasLasFotos();
+            
+            // Mover el slider
+            const offset = -fotoActual * 100;
+            sliderWrapper.style.transform = `translateX(${offset}%)`;
+            
+            // Actualizar indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle("active", index === fotoActual);
+            });
+            
+            // Actualizar contador
+            fotoActualSpan.textContent = fotoActual + 1;
+        }
+
+        function siguienteFoto() {
+            const todasLasFotos = obtenerTodasLasFotos();
+            if (fotoActual < todasLasFotos.length - 1) {
+                fotoActual++;
+            } else {
+                fotoActual = 0; // Volver al inicio
+            }
+            actualizarSlider();
+        }
+
+        function anteriorFoto() {
+            const todasLasFotos = obtenerTodasLasFotos();
+            if (fotoActual > 0) {
+                fotoActual--;
+            } else {
+                fotoActual = todasLasFotos.length - 1; // Ir al final
+            }
+            actualizarSlider();
+        }
+
+        function irAFoto(index) {
+            fotoActual = index;
+            actualizarSlider();
+        }
+
+        function cerrarGaleria() {
+            const galeriaPopup = document.getElementById("galeria-popup");
+            galeriaPopup.style.display = "none";
+            galeriaPopup.classList.add("oculto");
+        }
+
+        // === FUNCIONES PARA SUBIR FOTOS ===
+        
+        function abrirUploadModal() {
+            const modal = document.getElementById("upload-modal");
+            modal.style.display = "flex";
+            
+            // Limpiar formulario
+            document.getElementById("file-input").value = "";
+            document.getElementById("titulo-input").value = "";
+            document.getElementById("preview-container").style.display = "none";
+        }
+
+        function cerrarUploadModal() {
+            const modal = document.getElementById("upload-modal");
+            modal.style.display = "none";
+        }
+
+        function previewImage() {
+            const fileInput = document.getElementById("file-input");
+            const previewContainer = document.getElementById("preview-container");
+            const previewImage = document.getElementById("preview-image");
+            
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function subirFoto() {
+            const fileInput = document.getElementById("file-input");
+            const tituloInput = document.getElementById("titulo-input");
+            
+            const file = fileInput.files[0];
+            const titulo = tituloInput.value.trim();
+            
+            if (!file) {
+                alert("📸 Por favor selecciona una foto");
+                return;
+            }
+            
+            if (!titulo) {
+                alert("💕 Por favor escribe un título para el recuerdo");
+                return;
+            }
+            
+            // Convertir imagen a base64 y guardarla
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const nuevaFoto = {
+                    src: e.target.result, // Base64 de la imagen
+                    titulo: titulo,
+                    fecha: new Date().toLocaleDateString()
+                };
+                
+                // Agregar a fotos personalizadas
+                fotosPersonalizadas.push(nuevaFoto);
+                
+                // Guardar en localStorage
+                guardarFotos();
+                
+                // Recargar slider
+                cargarSlider();
+                
+                // Cerrar modal
+                cerrarUploadModal();
+                
+                // Mostrar mensaje
+                alert("✨ ¡Recuerdo agregado con éxito! 💖");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // === FUNCIONES PARA ELIMINAR FOTOS ===
+        
+        function mostrarConfirmEliminar(index) {
+            fotoAEliminar = index;
+            const modal = document.getElementById("confirm-modal");
+            modal.style.display = "flex";
+        }
+
+        function cerrarConfirmModal() {
+            const modal = document.getElementById("confirm-modal");
+            modal.style.display = "none";
+            fotoAEliminar = -1;
+        }
+
+        function confirmarEliminacion() {
+            if (fotoAEliminar === -1) return;
+            
+            // Calcular el índice en el array de fotos personalizadas
+            const indexPersonalizada = fotoAEliminar - fotosGaleria.length;
+            
+            if (indexPersonalizada >= 0 && indexPersonalizada < fotosPersonalizadas.length) {
+                // Eliminar la foto del array
+                fotosPersonalizadas.splice(indexPersonalizada, 1);
+                
+                // Guardar cambios
+                guardarFotos();
+                
+                // Recargar slider
+                cargarSlider();
+                
+                // Cerrar modal
+                cerrarConfirmModal();
+                
+                // Mostrar confirmación
+                alert("🗑️ Recuerdo eliminado correctamente");
+            }
+        }
+
+        // Función anterior mantenida por compatibilidad
+        function agregarFoto() {
+            abrirUploadModal();
+        }
+
+        function cerrarPopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "none";
+            popup.classList.add("oculto");
+        }
+
+        // Cerrar popup al hacer clic fuera del contenido
+        document.getElementById("popup").addEventListener("click", function(e) {
+            if (e.target === this) {
+                cerrarPopup();
+            }
+        });
+
+        // Cerrar popup con la tecla Escape
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") {
+                cerrarPopup();
+                cerrarGaleria();
+                cerrarUploadModal();
+            } else if (e.key === "ArrowRight") {
+                siguienteFoto();
+            } else if (e.key === "ArrowLeft") {
+                anteriorFoto();
+            }
+        });
+
+        // Cerrar galería al hacer clic fuera del contenido
+        document.getElementById("galeria-popup").addEventListener("click", function(e) {
+            if (e.target === this) {
+                cerrarGaleria();
+            }
+        });
+
+        // Cerrar modal upload al hacer clic fuera
+        document.getElementById("upload-modal").addEventListener("click", function(e) {
+            if (e.target === this) {
+                cerrarUploadModal();
+            }
+        });
+
+        // Cerrar modal de confirmación al hacer clic fuera
+        document.getElementById("confirm-modal").addEventListener("click", function(e) {
+            if (e.target === this) {
+                cerrarConfirmModal();
+            }
+        });
+
+        // Inicializar todo al cargar la página
+        window.addEventListener('load', function() {
+            // Cargar fotos guardadas
+            cargarFotosGuardadas();
+        });
+
+        // Funcionalidad de deslizar con touch para móviles
+        let startX = 0;
+        let isDragging = false;
+
+        document.getElementById("galeria-popup").addEventListener("touchstart", function(e) {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        });
+
+        document.getElementById("galeria-popup").addEventListener("touchmove", function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+        });
+
+        document.getElementById("galeria-popup").addEventListener("touchend", function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const endX = e.changedTouches[0].clientX;
+            const diffX = startX - endX;
+            
+            if (Math.abs(diffX) > 50) { // Mínimo deslizamiento de 50px
+                if (diffX > 0) {
+                    siguienteFoto(); // Deslizar hacia la izquierda = siguiente
+                } else {
+                    anteriorFoto(); // Deslizar hacia la derecha = anterior
+                }
+            }
+        });
+    </script>
+</body>
+</html>
